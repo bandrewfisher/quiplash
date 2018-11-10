@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Quiplash</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.0/angular.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <style>
+        .prompt-item:hover {
+            cursor: pointer;
+        }
+    </style>
+
+    <script>
+        var app = angular.module('app', [])
+        app.controller('promptCtrl', function($scope, $http) {
+            $scope.showList = true;
+            $scope.currPrompt = "";
+            $scope.response = "";
+            $scope.username = "asdf";
+            $scope.currPromptId = "";
+
+            $scope.prompts = [];
+            $scope.responseArray = [];
+
+            //Get the prompts from the database
+            $http.get('prompts').success(function(data) {
+                $scope.prompts = data;
+            });
+
+            $scope.updateResponseArray = function() {
+                let url = 'responses?id=' + $scope.currPromptId;
+                $http.get(url).success(function(data) {
+                    $scope.responseArray = data;
+                })
+            }
+
+            $scope.showResponses = function(id) {
+                $scope.responseArray = [];
+                for (let i = 0; i < $scope.prompts.length; i++) {
+                    if ($scope.prompts[i]._id == id) {
+                        $scope.currPrompt = $scope.prompts[i].Prompt;
+                        break;
+                    }
+                }
+                $scope.showList = false;
+                $scope.currPromptId = id;
+                $scope.updateResponseArray();
+
+            }
+
+
+
+            $scope.submitResponse = function() {
+                $http.post('response', {
+                        PromptId: $scope.currPromptId,
+                        Username: $scope.username,
+                        Response: $scope.response,
+                        Likes: 0
+                    })
+                    .then(
+                        function(response) {
+                            $scope.response = "";
+                            $scope.updateResponseArray();
+                        }
+                    )
+                
+            }
+            
+            $scope.likeResponse = function(id, numLikes) {
+                $http.post('like', {
+                    commentId: id,
+                    numLikes: numLikes
+                }).then(function(response) {
+                   $scope.updateResponseArray(); 
+                });
+            }
+
+        });
+    </script>
+
+</head>
+
+<body class='container' ng-app='app' ng-controller='promptCtrl'>
+
+    <h1 class='row justify-content-center'>Quiplash</h1>
+
+    <!--Display the list of props-->
+    <div id="promptsList" ng-show="showList">
+        <div class='list-group'>
+            <a ng-repeat="prompt in prompts" href="#" ng-click="showResponses(prompt._id)" class="row prompt-item list-group-item list-group-item-action">
+                {{prompt.Prompt}}
+            </a>
+        </div>
+    </div>
+
+    <!--Display the resopnses-->
+    <div id="promptsResponse" ng-show="!showList">
+        <button class="btn" ng-click="showList=true">Back to Prompts</button>
+        <h1>{{currPrompt}}</h1>
+
+        <div class="row">
+            <label class="col-1">Username</label>
+            <input class="col-3" type="text" ng-model="username">
+        </div>
+
+        <div class="row">
+            <label class="col-1">Response</label>
+            <input class="col-3" type="text" ng-model="response">
+        </div>
+
+        <button class="btn mt-3" ng-click="submitResponse()">Submit Response</button>
+
+
+        <div ng-repeat="response in responseArray">
+            {{response.Response}} <em>Submitted by {{response.Username}}</em><br>
+            
+        </div>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+</body>
+
+</html>
