@@ -11,6 +11,11 @@
         .prompt-item:hover {
             cursor: pointer;
         }
+        
+        .prompt-item {
+            font-family: arial;
+            font-size: 20px;
+        }
 
         h1 {
             font-family: 'Lobster', 'cursive';
@@ -19,6 +24,23 @@
 
         .response-label {
             font-size: 20px;
+        }
+        
+        .impact {
+            font-family: "impact";
+        }
+        
+        .response-title {
+            font-size: 30px;
+        }
+        
+        .submitted-by {
+            font-size: 1.25em;
+        }
+        
+        .list-group-item-action:hover {
+            background-color: #007bff;
+            color: white;
         }
     </style>
 
@@ -39,9 +61,6 @@
                 $scope.prompts = data;
             });
             
-            $scope.getLocalContent = function() {
-                
-            }
 
             $scope.updateResponseArray = function() {
                 let url = 'responses?id=' + $scope.currPromptId;
@@ -104,8 +123,9 @@
 
     <!--Display the list of props-->
     <div id="promptsList" ng-show="showList">
-        <div class='list-group'>
-            <a ng-repeat="prompt in prompts" href="#" ng-click="showResponses(prompt._id)" class="row prompt-item list-group-item list-group-item-action">
+        <div class='list-group mb-4'>
+            <a ng-repeat="prompt in prompts" href="#" ng-click="showResponses(prompt._id)" 
+                class="row prompt-item list-group-item list-group-item-action">
                 {{prompt.Prompt}}
             </a>
         </div>
@@ -113,8 +133,8 @@
 
     <!--Display the resopnses-->
     <div id="promptsResponse" ng-show="!showList">
-        <button class="btn" ng-click="showList=true">Back to Prompts</button>
-        <h2 class="mt-3 mb-2">{{currPrompt}}</h2>
+        <button class="btn btn-primary" ng-click="showList=true">Back to Prompts</button>
+        <h2 class="h1 mt-3 mb-2 impact text-uppercase">{{currPrompt}}</h2>
 
         <div class="row mt-3">
             <label class="col-2 response-label">Username</label>
@@ -126,13 +146,13 @@
             <input class="col-3" type="text" ng-model="response">
         </div>
 
-        <button class="btn mt-3" ng-click="submitResponse()">Submit Response</button>
+        <button class="btn btn-primary mt-3" ng-click="submitResponse()">Submit Response</button>
 
 
         <div ng-repeat="response in responseArray" class="card mt-3">
             <div class="card-body">
-                <h5 class="card-title">{{response.Response}}</h5>
-                <em>Submitted by {{response.Username}}</em><br>
+                <h5 class="card-title impact text-uppercase response-title">{{response.Response}}</h5>
+                <em class="submitted-by">Submitted by {{response.Username}}</em><br>
             </div>
         </div>
 

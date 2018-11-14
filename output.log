@@ -1,0 +1,11 @@
+nohup: ignoring input
+connected to database
+[0mGET / [36m304 [0m5.312 ms - -[0m
+[0mGET /prompts [36m304 [0m31.250 ms - -[0m
+[0mGET /responses?id=5be70f2a7183776445851498 [36m304 [0m8.272 ms - -[0m
+[0mGET /responses?id=5be70f2a718377644585149c [36m304 [0m1.872 ms - -[0m
+[0mGET /responses?id=5be70f2a7183776445851497 [36m304 [0m1.833 ms - -[0m
+whoo hoo
+[0mPOST /response [32m200 [0m23.486 ms - 2[0m
+Inserted new response: {"PromptId":"5be70f2a7183776445851497","Username":"Brett","Response":"The Decapitator","Likes":0}
+[0mGET /responses?id=5be70f2a7183776445851497 [32m200 [0m3.301 ms - 281[0m
